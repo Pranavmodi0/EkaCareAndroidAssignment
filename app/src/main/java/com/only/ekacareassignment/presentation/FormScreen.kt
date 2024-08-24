@@ -1,8 +1,16 @@
 package com.only.ekacareassignment.presentation
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,23 +27,35 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,6 +65,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.only.ekacareassignment.R
@@ -52,25 +73,44 @@ import com.only.ekacareassignment.data.entity.UserEntity
 import com.only.ekacareassignment.ui.theme.BackgroundBottom
 import com.only.ekacareassignment.ui.theme.BackgroundTop
 import com.only.ekacareassignment.ui.theme.TextBorder
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FormScreen(modifier: Modifier) {
+
+    val context = LocalContext.current
+
+    val view = LocalView.current
+    val window = (view.context as Activity).window
+    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
+
+    DisposableEffect(context) {
+        // Lock the screen orientation.
+        context.requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
+        onDispose {
+            // Release the the screen orientation lock.
+            context.requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
 
     val viewModel = hiltViewModel<FormViewModel>()
     Content(formViewModel = viewModel, modifier = modifier)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Content(formViewModel: FormViewModel, modifier: Modifier) {
-    val gradientShader = listOf(TextBorder, BackgroundTop)
+    val gradientShader = listOf(TextBorder, TextBorder)
 
     LaunchedEffect(key1 = true, block = {
         formViewModel.getUserDetails()
     })
 
     Column(
-        modifier.fillMaxSize()
-        .background(BackgroundBottom),
+        modifier
+            .fillMaxSize()
+            .background(BackgroundBottom),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -99,14 +139,27 @@ fun Content(formViewModel: FormViewModel, modifier: Modifier) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader: List<Color>) {
+
+    val dateState = rememberDatePickerState()
+    val millisToLocalDate = dateState.selectedDateMillis?.let {
+        CustomDatePicker().convertMillisToLocalDate(it)
+    }
+    val dateToString = millisToLocalDate?.let {
+        CustomDatePicker().dateToString(millisToLocalDate)
+    } ?: "${LocalDate.now()}"
 
     val name by formViewModel.userName.collectAsStateWithLifecycle()
     val age by formViewModel.userAge.collectAsStateWithLifecycle()
     val dob by formViewModel.userDob.collectAsStateWithLifecycle()
     val address by formViewModel.userAddress.collectAsStateWithLifecycle()
+
+    var datePickerShowing by remember {
+        mutableStateOf(false)
+    }
 
     val onNameSet: (value: String) -> Unit = remember {
         return@remember formViewModel::setUserName
@@ -116,7 +169,7 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
         return@remember formViewModel::setUserAge
     }
 
-    val onDobSet: (value: String) -> Unit = remember {
+    val onDobSet: (value: LocalDate) -> Unit = remember {
         return@remember formViewModel::setUserDob
     }
 
@@ -128,7 +181,7 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
         return@remember formViewModel::insertUserDetails
     }
 
-    val isButtonEnabled = name.isNotEmpty() && age.isNotEmpty() && dob.isNotEmpty() && address.isNotEmpty()
+    var isButtonEnabled = name.isNotEmpty() && age.isNotEmpty() && dob.isNotEmpty() && address.isNotEmpty()
 
     Scaffold(
         topBar = {
@@ -199,7 +252,7 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
                                     color = TextBorder,
                                     shape = RoundedCornerShape(size = 15.dp)
                                 )
-                                .padding(horizontal = 15.dp),
+                                .padding(horizontal = 17.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {
                             if (name.isEmpty()) {
@@ -241,6 +294,20 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
                                 .padding(horizontal = 15.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {
+                            val view = LocalView.current
+                            try {
+                                val ageInt = age.toInt()
+                                if (ageInt > 100) {
+                                    Toast.makeText(view.context, "Age cannot be greater than 100", Toast.LENGTH_SHORT).show()
+                                    isButtonEnabled = false
+                                }
+                            } catch (e: NumberFormatException) {
+                                // handle invalid age input (optional)
+                            }
+//                            if (age > 100.toString()){
+//                                Toast.makeText(view.context, "Age cannot be greater than 100", Toast.LENGTH_SHORT).show()
+//                                isButtonEnabled = false
+//                            }
                             if (age.isEmpty()) {
                                 Text(
                                     "Age",
@@ -256,42 +323,66 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
 
                 Spacer(Modifier.size(16.dp))
 
-                BasicTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 15.dp)
-                        .height(45.dp),
-                    value = dob,
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    onValueChange = { onDobSet(it) },
-                    decorationBox = { innerTextField ->
-                        Box(
-                            Modifier
-                                .background(Color.White, RoundedCornerShape(size = 15.dp))
-                                .border(
-                                    width = 1.dp,
-                                    color = TextBorder,
-                                    shape = RoundedCornerShape(size = 15.dp)
-                                )
-                                .padding(horizontal = 15.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            if (dob.isEmpty()) {
-                                Text(
-                                    "Date Of Birth",
-                                    color = Color.Gray,
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                            innerTextField()
-                        }
+                TextButton(
+                    onClick = {
+                        datePickerShowing = true
                     },
-                )
+                ) {
+                    Box(
+                        Modifier
+                            .background(Color.White, RoundedCornerShape(size = 15.dp))
+                            .border(
+                                width = 1.dp,
+                                color = TextBorder,
+                                shape = RoundedCornerShape(size = 15.dp)
+                            )
+                            .fillMaxWidth()
+                            .height(45.dp)
+                            .padding(horizontal = 15.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        if (datePickerShowing) {
+                            DatePickerDialog(
+                                colors = DatePickerDefaults.colors(TextBorder),
+                                onDismissRequest = { datePickerShowing = false },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            datePickerShowing = false
+                                            millisToLocalDate?.let { onDobSet(it) }
+                                        }
+                                    ) {
+                                        Text(text = "OK")
+                                    }
+                                },
+                                dismissButton = {
+                                    Button(
+                                        onClick = { datePickerShowing = false }
+                                    ) {
+                                        Text(text = "Cancel")
+                                    }
+                                }
+                            ) {
+                                DatePicker(state = dateState, showModeToggle = true)
+                            }
+                        }
+                        if (dob.isEmpty()) {
+                            Text(
+                                "Date Of Birth",
+                                color = Color.Gray,
+                                textAlign = TextAlign.Start,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        } else {
+                            Text(
+                                text = dateToString,
+                                color = Color.Black,
+                                textAlign = TextAlign.Start,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
 
                 Spacer(Modifier.size(16.dp))
 
@@ -338,7 +429,8 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
                         .padding(horizontal = 30.dp)
                         .background(
                             if (isButtonEnabled) TextBorder else Color.LightGray,
-                            RoundedCornerShape(size = 15.dp))
+                            RoundedCornerShape(size = 15.dp)
+                        )
                         .fillMaxWidth(),
                     enabled = isButtonEnabled,
                     onClick = {
@@ -396,7 +488,8 @@ fun UserCard(
         modifier = modify
         ) {
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .background(Color.White),
             verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -439,8 +532,17 @@ fun UserCard(
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun FormScreenPreview(){
-    FormScreen(modifier = Modifier)
+fun Context.requireActivity(): Activity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    throw IllegalStateException("No activity was present but it is required.")
 }
+
+//@Preview(showSystemUi = true)
+//@Composable
+//fun FormScreenPreview(){
+//    FormScreen(modifier = Modifier)
+//}

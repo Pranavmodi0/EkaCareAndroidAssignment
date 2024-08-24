@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +37,7 @@ class FormViewModel @Inject constructor(
     fun insertUserDetails(userEntity: UserEntity){
         viewModelScope.launch(IO) {
             userUseCase(userEntity)
+            clearFields()
         }
     }
 
@@ -53,13 +55,20 @@ class FormViewModel @Inject constructor(
 
     private val _userDob = MutableStateFlow("")
     val userDob = _userDob.asStateFlow()
-    fun setUserDob(dob:String){
-        _userDob.tryEmit(dob)
+    fun setUserDob(dob:LocalDate){
+        _userDob.tryEmit(dob.toString())
     }
 
     private val _userAddress = MutableStateFlow("")
     val userAddress = _userAddress.asStateFlow()
     fun setUserAddress(address:String){
         _userAddress.tryEmit(address)
+    }
+
+    private fun clearFields() {
+        _userName.tryEmit("")
+        _userAge.tryEmit("")
+        _userDob.tryEmit("")
+        _userAddress.tryEmit("")
     }
 }

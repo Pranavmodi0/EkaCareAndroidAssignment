@@ -11,13 +11,13 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logo2"
         android:supportsRtl="true"
-        android:theme="@style/Theme.EkaCareAssignment"
+        android:theme="@style/Theme.EkaCareAssignment.Starting"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.EkaCareAssignment">
+            android:theme="@style/Theme.EkaCareAssignment.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -22,6 +22,9 @@ class FormViewModel @Inject constructor(
     private val _usersDetailList = MutableStateFlow(emptyList<UserEntity>())
     val usersDetailList = _usersDetailList.asStateFlow()
 
+    private val _submissionStatus = MutableStateFlow<Boolean?>(null)
+    val submissionStatus = _submissionStatus.asStateFlow()
+
     init {
         getUserDetails()
     }
@@ -36,8 +39,13 @@ class FormViewModel @Inject constructor(
 
     fun insertUserDetails(userEntity: UserEntity){
         viewModelScope.launch(IO) {
-            userUseCase(userEntity)
-            clearFields()
+            try {
+                userUseCase(userEntity)
+                _submissionStatus.emit(true)
+                clearFields()
+            } catch (e: Exception) {
+                _submissionStatus.emit(false)
+            }
         }
     }
 

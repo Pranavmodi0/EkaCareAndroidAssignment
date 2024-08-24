@@ -45,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -135,6 +136,8 @@ fun Content(formViewModel: FormViewModel, modifier: Modifier) {
             fontWeight = FontWeight.Bold
         )
 
+        Spacer(Modifier.size(5.dp))
+
         BottomContent(formViewModel = formViewModel, modifier = modifier)
     }
 }
@@ -143,6 +146,21 @@ fun Content(formViewModel: FormViewModel, modifier: Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader: List<Color>) {
+
+    val submissionStatus by formViewModel.submissionStatus.collectAsState()
+
+    val context = LocalContext.current
+
+    submissionStatus?.let { isSuccess ->
+        LaunchedEffect(isSuccess) {
+            if (isSuccess) {
+                Toast.makeText(context, "Submission Successful", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Submission Failed", Toast.LENGTH_SHORT).show()
+            }
+            formViewModel.submissionStatus
+        }
+    }
 
     val dateState = rememberDatePickerState()
     val millisToLocalDate = dateState.selectedDateMillis?.let {
@@ -203,8 +221,7 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
                                 brush = Brush.linearGradient(
                                     colors = gradientShader
                                 )
-                            ),
-                            fontWeight = FontWeight.Bold
+                            )
                         )
                     },
                     colors = TopAppBarDefaults.mediumTopAppBarColors(
@@ -212,13 +229,13 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
                     )
                 )
 
-                Spacer(Modifier.size(16.dp))
+                Spacer(Modifier.size(5.dp))
 
                 Image(
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(130.dp)
                         .align(Alignment.CenterHorizontally),
-                    painter = painterResource(id = R.drawable.logo2),
+                    painter = painterResource(id = R.drawable.logo),
                     contentDescription = "logo"
                 )
 
@@ -302,12 +319,7 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
                                     isButtonEnabled = false
                                 }
                             } catch (e: NumberFormatException) {
-                                // handle invalid age input (optional)
                             }
-//                            if (age > 100.toString()){
-//                                Toast.makeText(view.context, "Age cannot be greater than 100", Toast.LENGTH_SHORT).show()
-//                                isButtonEnabled = false
-//                            }
                             if (age.isEmpty()) {
                                 Text(
                                     "Age",
@@ -338,7 +350,7 @@ fun TopContent(formViewModel: FormViewModel, modifier: Modifier, gradientShader:
                             )
                             .fillMaxWidth()
                             .height(45.dp)
-                            .padding(horizontal = 15.dp),
+                            .padding(horizontal = 20.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         if (datePickerShowing) {

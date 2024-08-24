@@ -13,12 +13,16 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
+    background = BackgroundBottom,
+    surface = BackgroundBottom,
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
+    background = BackgroundBottom,
+    surface = BackgroundBottom,
     secondary = PurpleGrey40,
     tertiary = Pink40
 
@@ -37,7 +41,7 @@ private val LightColorScheme = lightColorScheme(
 fun EkaCareAssignmentTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

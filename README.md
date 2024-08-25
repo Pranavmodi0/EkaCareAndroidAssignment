@@ -18,10 +18,7 @@
 ### Project Architecture
 Please read this Readme File before evaluating codebase.
 
-
-**Install App From here** : [Drive link](coming soon)
-
-MVVM + CLEAN Principles
+Jetpack Compose + MVVM + CLEAN Principles
 
 
 In this project I used

@@ -10,7 +10,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +32,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -54,7 +52,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -63,7 +60,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
@@ -516,6 +512,7 @@ fun UserCard(
                     text = wrapper.userEntity.name,
                     maxLines = 1,
                     fontWeight = FontWeight.Bold,
+                    color = Color.Gray,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(5.dp))
@@ -523,6 +520,7 @@ fun UserCard(
                     text = wrapper.userEntity.age.toString(),
                     maxLines = 1,
                     fontWeight = FontWeight.Normal,
+                    color = Color.Gray,
                     style = MaterialTheme.typography.bodySmall
                 )
                 Spacer(modifier = Modifier.height(5.dp))
@@ -530,6 +528,7 @@ fun UserCard(
                     text = wrapper.userEntity.dob,
                     maxLines = 1,
                     fontWeight = FontWeight.Normal,
+                    color = Color.Gray,
                     style = MaterialTheme.typography.bodySmall
                 )
                 Spacer(modifier = Modifier.height(5.dp))
@@ -537,6 +536,7 @@ fun UserCard(
                     text = wrapper.userEntity.address,
                     maxLines = 1,
                     fontWeight = FontWeight.Normal,
+                    color = Color.Gray,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -552,9 +552,3 @@ fun Context.requireActivity(): Activity {
     }
     throw IllegalStateException("No activity was present but it is required.")
 }
-
-//@Preview(showSystemUi = true)
-//@Composable
-//fun FormScreenPreview(){
-//    FormScreen(modifier = Modifier)
-//}

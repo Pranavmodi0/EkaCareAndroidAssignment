@@ -3,7 +3,6 @@ package com.only.ekacareassignment.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.only.ekacareassignment.data.entity.UserEntity
-import com.only.ekacareassignment.data.repository.Repository
 import com.only.ekacareassignment.domain.UserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO

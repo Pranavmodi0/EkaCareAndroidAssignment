@@ -1,14 +1,11 @@
 **All Functionalities**
-![Swipe Mockup 1]()
-
-
-
+<img src = "https://github.com/user-attachments/assets/adca0166-386d-411a-bd0a-96e6dfe1b812" width="200" height="400" />
+<img src = "https://github.com/user-attachments/assets/568a3910-fe96-41a0-96f7-d0221bf96bea" width="200" height="400" />
+<img src = "https://github.com/user-attachments/assets/2ecd832a-a475-4d39-ad82-f059f955fcbf" width="200" height="400" />
 
 
 ### Project Architecture
 Please read this Readme File before evaluating codebase.
-
-
 
 
 **Install App From here** : [Drive link](coming soon)
@@ -28,7 +25,7 @@ In this project I used
 - *Data* 
      - Datasource
      - Entity,
-     - Repository
+     - Repository Implementation
 - *DI*  
     - Depedency Injection 
 - *Domain* 
@@ -37,7 +34,6 @@ In this project I used
 - *Presentation* 
     -  Contains UI Elements 
     -  ViewModels
-
 
 
 ### Contact Information 
@@ -49,4 +45,4 @@ phone : +919370325483
             src="https://logopng.com.br/logos/linkedin-83.png"
             width="40" /></a>
     <a href="https://play.google.com/store/apps/developer?id=OnlyModi"><img align="center"
-            src="" height="40" width="40" /></a>
+            src="https://github.com/user-attachments/assets/0f8756f9-05a3-4ae0-8317-d4a83e515d22" height="40" width="40" /></a>

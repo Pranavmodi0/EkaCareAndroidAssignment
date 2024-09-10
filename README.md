@@ -1,20 +1,6 @@
 **All Functionalities**
 
 
-
-
-<img src = "https://github.com/user-attachments/assets/adca0166-386d-411a-bd0a-96e6dfe1b812" width="200" height="400" />
-<img src = "https://github.com/user-attachments/assets/568a3910-fe96-41a0-96f7-d0221bf96bea" width="200" height="400" />
-<img src = "https://github.com/user-attachments/assets/2ecd832a-a475-4d39-ad82-f059f955fcbf" width="200" height="400" />
-
-
-
-
-
-
-**Install App From here** : [Drive link](https://drive.google.com/file/d/1EtUkVAFCURaxMrWIgj1EroD57t2SrKvB/view?usp=drive_link)
-
-
 ### Project Architecture
 Please read this Readme File before evaluating codebase.
 
@@ -46,8 +32,6 @@ In this project I used
 
 ### Contact Information 
 email : pranavmodi64@gmail.com
-
-phone : +919370325483
 
 <a href="https://www.linkedin.com/in/pranav-modi-960b67240" target="blank"><img align="center"
             src="https://logopng.com.br/logos/linkedin-83.png"
